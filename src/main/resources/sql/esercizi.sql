@@ -1,77 +1,64 @@
--- Table: public.Prodotto
 
--- DROP TABLE IF EXISTS public."Prodotto";
+--esercizio 1
+--select * from clienti where clienti.nome='Mario'
 
-CREATE TABLE IF NOT EXISTS public."Prodotto"
-(
-    id_prodotto integer NOT NULL DEFAULT nextval('"Prodotto_id_prodotto_seq"'::regclass),
-    descrizione character varying COLLATE pg_catalog."default" NOT NULL,
-    in_produzione boolean NOT NULL,
-    in_commercio boolean NOT NULL,
-    data_attivazione date NOT NULL,
-    data_disattivazione date NOT NULL,
-    CONSTRAINT "Prodotto_pkey" PRIMARY KEY (id_prodotto)
-)
+--esercizio 2
 
-TABLESPACE pg_default;
+--select nome, cognome from clienti where clienti.anno_di_nascita=1982;
 
-ALTER TABLE IF EXISTS public."Prodotto"
-    OWNER to postgres;
+--esercizio 3
+--select numero_fattura from fatture where iva=20;
+
+--esercizio 4
+-- select * from prodotto where EXTRACT(YEAR FROM prodotto.data_attivazione)=1900
+-- and (prodotto.in_produzione=true or prodotto.in_commercio=true);
 
 
-    -- Table: public.clienti
+--esercizio 5
+--select * from fatture join clienti on clienti.numero_cliente = fatture.id_cliente where fatture.importo<1000;
 
-    -- DROP TABLE IF EXISTS public.clienti;
+--esercizio 6
 
-    CREATE TABLE IF NOT EXISTS public.clienti
-    (
-        numero_cliente integer NOT NULL DEFAULT nextval('clienti_numero_cliente_seq'::regclass),
-        nome character varying COLLATE pg_catalog."default" NOT NULL,
-        cognome character varying COLLATE pg_catalog."default" NOT NULL,
-        anno_di_nascita integer NOT NULL,
-        regione_residenza character varying COLLATE pg_catalog."default" NOT NULL,
-        CONSTRAINT clienti_pkey PRIMARY KEY (numero_cliente)
-    )
+--select numero_fattura,importo,iva,data_fattura,fornitori.denominazione from fatture
+--join fornitori on fatture.numero_fornitura=fornitori.numero_fornitore
 
-    TABLESPACE pg_default;
+--esercizio 7
 
-    ALTER TABLE IF EXISTS public.clienti
-        OWNER to postgres;
+--select Extract(YEAR FROM data_fattura), count(*) from fatture where fatture.iva = 20 group by Extract(YEAR FROM data_fattura)
 
-        -- Table: public.fatture
+--esercizio 8
 
-        -- DROP TABLE IF EXISTS public.fatture;
+-- SELECT
+--     EXTRACT(YEAR FROM data_fattura) AS anno_fattura,
+--     COUNT(*) AS numero_fatture,
+--     SUM(importo) AS totale_importo
+-- FROM
+--     fatture
+-- GROUP BY
+--     EXTRACT(YEAR FROM data_fattura)
+-- ORDER BY
+--     anno_fattura;
 
-        CREATE TABLE IF NOT EXISTS public.fatture
-        (
-            numero_fattura integer NOT NULL DEFAULT nextval('fatture_numero_fattura_seq'::regclass),
-            tipologia character varying COLLATE pg_catalog."default" NOT NULL,
-            importo double precision NOT NULL,
-            iva double precision NOT NULL,
-            id_cliente integer NOT NULL,
-            data_fattura date NOT NULL,
-            numero_fornitura integer NOT NULL,
-            CONSTRAINT fatture_pkey PRIMARY KEY (numero_fattura)
-        )
 
-        TABLESPACE pg_default;
+--esercizio 9
 
-        ALTER TABLE IF EXISTS public.fatture
-            OWNER to postgres;
+-- select EXTRACT(YEAR FROM data_fattura) as anno_fattura from fatture where fatture.tipologia='A'
+-- GROUP BY EXTRACT(YEAR FROM data_fattura) having count(numero_fattura) >2
+-- ORDER BY  anno_fattura;
 
-            -- Table: public.fornitori
+-- esercizio 10
 
-            -- DROP TABLE IF EXISTS public.fornitori;
+-- select sum (importo) as importi_regione, clienti.regione_residenza from fatture join clienti on clienti.numero_cliente= fatture.id_cliente
+-- group by clienti.regione_residenza
 
-            CREATE TABLE IF NOT EXISTS public.fornitori
-            (
-                numero_fornitore integer NOT NULL DEFAULT nextval('fornitori_numero_fornitore_seq'::regclass),
-                denominazione character varying COLLATE pg_catalog."default" NOT NULL,
-                regione_residenza character varying COLLATE pg_catalog."default" NOT NULL,
-                CONSTRAINT fornitori_pkey PRIMARY KEY (numero_fornitore)
-            )
+--esercizio 11
 
-            TABLESPACE pg_default;
-
-            ALTER TABLE IF EXISTS public.fornitori
-                OWNER to postgres;
+-- SELECT
+--     COUNT(DISTINCT clienti.numero_cliente) AS numero_clienti
+-- FROM
+--     clienti
+-- JOIN
+--     fatture ON clienti.numero_cliente = fatture.id_cliente
+-- WHERE
+--     clienti.anno_di_nascita = 1980
+--     AND fatture.importo > 50;
